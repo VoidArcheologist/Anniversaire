@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quiz Challenge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .error {
+      color: red;
+      font-size: 3rem;
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .error.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <!-- PAGE 1 -->
+    <div class="page active" data-answer="paris">
+      <h1>Question 1</h1>
+      <p>What is the capital of France?</p>
+      <input type="text" placeholder="Your answer" />
+      <button onclick="checkAnswer(this)">Submit</button>
+      <div class="error">❌</div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" data-answer="blue">
+      <h1>Question 2</h1>
+      <p>What color is the sky on a clear day?</p>
+      <input type="text" placeholder="Your answer" />
+      <button onclick="checkAnswer(this)">Submit</button>
+      <div class="error">❌</div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" data-answer="7">
+      <h1>Question 3</h1>
+      <p>How many days are in a week?</p>
+      <input type="text" placeholder="Your answer" />
+      <button onclick="checkAnswer(this)">Submit</button>
+      <div class="error">❌</div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page" data-answer="water">
+      <h1>Question 4</h1>
+      <p>What do humans drink to survive?</p>
+      <input type="text" placeholder="Your answer" />
+      <button onclick="checkAnswer(this)">Submit</button>
+      <div class="error">❌</div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page" data-answer="earth">
+      <h1>Question 5</h1>
+      <p>What planet do we live on?</p>
+      <input type="text" placeholder="Your answer" />
+      <button onclick="checkAnswer(this)">Submit</button>
+      <div class="error">❌</div>
+    </div>
+
+    <!-- REWARD PAGE -->
+    <div class="page">
+      <h1>🎉 Congratulations! 🎉</h1>
+      <p>You completed the quiz.</p>
+      <p>Your reward: ⭐ Amazing job! ⭐</p>
+    </div>
+
+  </div>
+
+  <script>
+    function checkAnswer(button) {
+      const page = button.parentElement;
+      const input = page.querySelector('input');
+      const error = page.querySelector('.error');
+      const correctAnswer = page.dataset.answer;
+
+      const userAnswer = input.value.trim().toLowerCase();
+
+      if (userAnswer === correctAnswer) {
+        goToNextPage(page);
+      } else {
+        showError(error);
+      }
+    }
+
+    function goToNextPage(currentPage) {
+      const pages = document.querySelectorAll('.page');
+      const index = Array.from(pages).indexOf(currentPage);
+
+      currentPage.classList.remove('active');
+      pages[index + 1].classList.add('active');
+    }
+
+    function showError(errorElement) {
+      errorElement.classList.add('show');
+      setTimeout(() => {
+        errorElement.classList.remove('show');
+      }, 800);
+    }
+  </script>
+
+</body>
+</html>
