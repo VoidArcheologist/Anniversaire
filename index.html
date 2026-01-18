@@ -49,10 +49,7 @@
       font-size: 1rem;
     }
 
-    .decor {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
+    .decor { font-size: 2rem; margin-bottom: 10px; }
 
     .error {
       font-size: 2.5rem;
@@ -60,7 +57,6 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
-
     .error.show { opacity: 1; }
 
     .drag-container {
@@ -93,7 +89,7 @@
 
 <div class="card">
 
-  <!-- PAGE 1 WELCOME -->
+  <!-- PAGE 1 -->
   <div class="page active">
     <div class="decor">✨🌸✨</div>
     <h1>Welcome</h1>
@@ -101,7 +97,7 @@
     <button onclick="nextPage()">Begin</button>
   </div>
 
-  <!-- PAGE 2 QUESTION -->
+  <!-- PAGE 2 -->
   <div class="page" data-answer="love">
     <h1>Question</h1>
     <p>What makes everything better?</p>
@@ -112,35 +108,36 @@
 
   <!-- PAGE 3 DRAG MATCH -->
   <div class="page" id="page3">
-    <h1>Match them</h1>
+    <h1>Match the flowers</h1>
     <div class="drag-container">
       <div>
         <img src="Semper_Augustus.jpg" />
-        <div class="dropzone" data-answer="Viseroij"></div>
-      </div>
-      <div>
-        <img src="Admiral_van_der_Eijck.jpg" />
         <div class="dropzone" data-answer="Semper Augustus"></div>
       </div>
       <div>
-        <img src="Viseroij.png" />
+        <img src="Admiral_van_der_Eijck.jpg" />
         <div class="dropzone" data-answer="Admiral van der Eijck"></div>
+      </div>
+      <div>
+        <img src="Viseroij.png" />
+        <div class="dropzone" data-answer="Viseroij"></div>
       </div>
     </div>
 
     <div class="drag-container">
-      <div class="draggable" draggable="true">Semper_Augustus</div>
+      <div class="draggable" draggable="true">Semper Augustus</div>
       <div class="draggable" draggable="true">Admiral van der Eijck</div>
       <div class="draggable" draggable="true">Viseroij</div>
     </div>
 
-    <button onclick="checkDragPage()">Continue</button>
+    <button onclick="checkDragPage()">Submit</button>
+    <div class="error">❌</div>
   </div>
 
-  <!-- PAGE 4 ALL VALID -->
+  <!-- PAGE 4 -->
   <div class="page">
     <h1>Choose one 🎀</h1>
-    <img src="https://via.placeholder.com/120" />
+    <img src="bow.png" />
     <div class="drag-container">
       <div class="draggable" draggable="true">Choice 1</div>
       <div class="draggable" draggable="true">Choice 2</div>
@@ -153,9 +150,10 @@
   <div class="page">
     <h1>Write something</h1>
     <input type="text" id="magicInput" />
+    <button onclick="checkMagic()">Submit</button>
   </div>
 
-  <!-- PAGE 6 REWARD -->
+  <!-- PAGE 6 -->
   <div class="page">
     <h1>💖 Reward 💖</h1>
     <p>You made it to the end.</p>
@@ -174,10 +172,14 @@ function nextPage() {
   pages[current].classList.add('active');
 }
 
+function normalize(str) {
+  return str.toLowerCase().replace(/[_\s]+/g, ' ').trim();
+}
+
 function checkAnswer(btn) {
   const page = btn.parentElement;
-  const input = page.querySelector('input').value.trim().toLowerCase();
-  const correct = page.dataset.answer;
+  const input = normalize(page.querySelector('input').value);
+  const correct = normalize(page.dataset.answer);
   const error = page.querySelector('.error');
 
   if (input === correct) nextPage();
@@ -187,10 +189,11 @@ function checkAnswer(btn) {
   }
 }
 
-// DRAG & DROP (mobile compatible)
+// DRAG & DROP
 let dragged;
-
 document.addEventListener('dragstart', e => dragged = e.target);
+
+function allowDrop(e) { e.preventDefault(); }
 
 document.querySelectorAll('.dropzone').forEach(zone => {
   zone.addEventListener('dragover', e => e.preventDefault());
@@ -201,9 +204,17 @@ document.querySelectorAll('.dropzone').forEach(zone => {
 });
 
 function checkDragPage() {
-  const zones = document.querySelectorAll('#page3 .dropzone');
+  const page = document.getElementById('page3');
+  const zones = page.querySelectorAll('.dropzone');
+  const error = page.querySelector('.error');
+
   for (let z of zones) {
-    if (z.textContent !== z.dataset.answer) return;
+    if (normalize(z.textContent) !== normalize(z.dataset.answer)) {
+      error.classList.add('show');
+      zones.forEach(d => d.textContent = '');
+      setTimeout(() => error.classList.remove('show'), 800);
+      return;
+    }
   }
   nextPage();
 }
@@ -216,8 +227,11 @@ let index = 0;
 magic.addEventListener('input', () => {
   index = Math.min(index + 1, fixed.length);
   magic.value = fixed.slice(0, index);
-  if (index === fixed.length) setTimeout(nextPage, 800);
 });
+
+function checkMagic() {
+  if (magic.value === fixed) nextPage();
+}
 </script>
 
 </body>
