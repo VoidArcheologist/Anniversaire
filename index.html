@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Quiz Challenge</title>
+  <title>Special Quiz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #f8e8ff, #e0f7fa);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,151 +18,207 @@
     .card {
       background: white;
       padding: 30px;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 95%;
+      max-width: 420px;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
       text-align: center;
     }
 
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 20px;
-    }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    h1 { margin-bottom: 15px; }
+    p { margin-bottom: 20px; }
 
     input {
       width: 100%;
       padding: 10px;
       font-size: 1rem;
-      margin-bottom: 15px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      margin-bottom: 15px;
     }
 
     button {
       padding: 10px 20px;
-      font-size: 1rem;
+      border-radius: 8px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #007bff;
+      background: #8e24aa;
       color: white;
+      font-size: 1rem;
     }
 
-    button:hover {
-      background: #0056b3;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
+    .decor {
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
 
     .error {
+      font-size: 2.5rem;
       color: red;
-      font-size: 3rem;
-      margin-top: 10px;
       opacity: 0;
       transition: opacity 0.3s;
     }
 
-    .error.show {
-      opacity: 1;
+    .error.show { opacity: 1; }
+
+    .drag-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 10px;
     }
+
+    .draggable {
+      padding: 8px 12px;
+      background: #ce93d8;
+      border-radius: 8px;
+      color: #4a148c;
+      cursor: grab;
+    }
+
+    .dropzone {
+      min-height: 40px;
+      border: 2px dashed #aaa;
+      border-radius: 8px;
+      margin-top: 5px;
+      padding: 5px;
+    }
+
+    img { width: 90px; border-radius: 10px; }
   </style>
 </head>
 <body>
 
-  <div class="card">
+<div class="card">
 
-    <!-- PAGE 1 -->
-    <div class="page active" data-answer="paris">
-      <h1>Question 1</h1>
-      <p>What is the capital of France?</p>
-      <input type="text" placeholder="Your answer" />
-      <button onclick="checkAnswer(this)">Submit</button>
-      <div class="error">❌</div>
-    </div>
-
-    <!-- PAGE 2 -->
-    <div class="page" data-answer="blue">
-      <h1>Question 2</h1>
-      <p>What color is the sky on a clear day?</p>
-      <input type="text" placeholder="Your answer" />
-      <button onclick="checkAnswer(this)">Submit</button>
-      <div class="error">❌</div>
-    </div>
-
-    <!-- PAGE 3 -->
-    <div class="page" data-answer="7">
-      <h1>Question 3</h1>
-      <p>How many days are in a week?</p>
-      <input type="text" placeholder="Your answer" />
-      <button onclick="checkAnswer(this)">Submit</button>
-      <div class="error">❌</div>
-    </div>
-
-    <!-- PAGE 4 -->
-    <div class="page" data-answer="water">
-      <h1>Question 4</h1>
-      <p>What do humans drink to survive?</p>
-      <input type="text" placeholder="Your answer" />
-      <button onclick="checkAnswer(this)">Submit</button>
-      <div class="error">❌</div>
-    </div>
-
-    <!-- PAGE 5 -->
-    <div class="page" data-answer="earth">
-      <h1>Question 5</h1>
-      <p>What planet do we live on?</p>
-      <input type="text" placeholder="Your answer" />
-      <button onclick="checkAnswer(this)">Submit</button>
-      <div class="error">❌</div>
-    </div>
-
-    <!-- REWARD PAGE -->
-    <div class="page">
-      <h1>🎉 Congratulations! 🎉</h1>
-      <p>You completed the quiz.</p>
-      <p>Your reward: ⭐ Amazing job! ⭐</p>
-    </div>
-
+  <!-- PAGE 1 WELCOME -->
+  <div class="page active">
+    <div class="decor">✨🌸✨</div>
+    <h1>Welcome</h1>
+    <p>This little journey is made with care and love.</p>
+    <button onclick="nextPage()">Begin</button>
   </div>
 
-  <script>
-    function checkAnswer(button) {
-      const page = button.parentElement;
-      const input = page.querySelector('input');
-      const error = page.querySelector('.error');
-      const correctAnswer = page.dataset.answer;
+  <!-- PAGE 2 QUESTION -->
+  <div class="page" data-answer="love">
+    <h1>Question</h1>
+    <p>What makes everything better?</p>
+    <input type="text" />
+    <button onclick="checkAnswer(this)">Submit</button>
+    <div class="error">❌</div>
+  </div>
 
-      const userAnswer = input.value.trim().toLowerCase();
+  <!-- PAGE 3 DRAG MATCH -->
+  <div class="page" id="page3">
+    <h1>Match them</h1>
+    <div class="drag-container">
+      <div>
+        <img src="https://via.placeholder.com/90" />
+        <div class="dropzone" data-answer="Cat"></div>
+      </div>
+      <div>
+        <img src="https://via.placeholder.com/90" />
+        <div class="dropzone" data-answer="Dog"></div>
+      </div>
+      <div>
+        <img src="https://via.placeholder.com/90" />
+        <div class="dropzone" data-answer="Bird"></div>
+      </div>
+    </div>
 
-      if (userAnswer === correctAnswer) {
-        goToNextPage(page);
-      } else {
-        showError(error);
-      }
-    }
+    <div class="drag-container">
+      <div class="draggable" draggable="true">Cat</div>
+      <div class="draggable" draggable="true">Dog</div>
+      <div class="draggable" draggable="true">Bird</div>
+    </div>
 
-    function goToNextPage(currentPage) {
-      const pages = document.querySelectorAll('.page');
-      const index = Array.from(pages).indexOf(currentPage);
+    <button onclick="checkDragPage()">Continue</button>
+  </div>
 
-      currentPage.classList.remove('active');
-      pages[index + 1].classList.add('active');
-    }
+  <!-- PAGE 4 ALL VALID -->
+  <div class="page">
+    <h1>Choose one 🎀</h1>
+    <img src="https://via.placeholder.com/120" />
+    <div class="drag-container">
+      <div class="draggable" draggable="true">Choice 1</div>
+      <div class="draggable" draggable="true">Choice 2</div>
+      <div class="draggable" draggable="true">Choice 3</div>
+    </div>
+    <div class="dropzone" ondrop="nextPage()" ondragover="allowDrop(event)"></div>
+  </div>
 
-    function showError(errorElement) {
-      errorElement.classList.add('show');
-      setTimeout(() => {
-        errorElement.classList.remove('show');
-      }, 800);
-    }
-  </script>
+  <!-- PAGE 5 MAGIC TEXT -->
+  <div class="page">
+    <h1>Write something</h1>
+    <input type="text" id="magicInput" />
+  </div>
+
+  <!-- PAGE 6 REWARD -->
+  <div class="page">
+    <h1>💖 Reward 💖</h1>
+    <p>You made it to the end.</p>
+    <p>You are truly special.</p>
+  </div>
+
+</div>
+
+<script>
+let current = 0;
+const pages = document.querySelectorAll('.page');
+
+function nextPage() {
+  pages[current].classList.remove('active');
+  current++;
+  pages[current].classList.add('active');
+}
+
+function checkAnswer(btn) {
+  const page = btn.parentElement;
+  const input = page.querySelector('input').value.trim().toLowerCase();
+  const correct = page.dataset.answer;
+  const error = page.querySelector('.error');
+
+  if (input === correct) nextPage();
+  else {
+    error.classList.add('show');
+    setTimeout(() => error.classList.remove('show'), 800);
+  }
+}
+
+// DRAG & DROP (mobile compatible)
+let dragged;
+
+document.addEventListener('dragstart', e => dragged = e.target);
+
+document.querySelectorAll('.dropzone').forEach(zone => {
+  zone.addEventListener('dragover', e => e.preventDefault());
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.textContent = dragged.textContent;
+  });
+});
+
+function checkDragPage() {
+  const zones = document.querySelectorAll('#page3 .dropzone');
+  for (let z of zones) {
+    if (z.textContent !== z.dataset.answer) return;
+  }
+  nextPage();
+}
+
+// MAGIC INPUT
+const fixed = "He's perfect";
+const magic = document.getElementById('magicInput');
+let index = 0;
+
+magic.addEventListener('input', () => {
+  index = Math.min(index + 1, fixed.length);
+  magic.value = fixed.slice(0, index);
+  if (index === fixed.length) setTimeout(nextPage, 800);
+});
+</script>
 
 </body>
 </html>
