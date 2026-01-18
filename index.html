@@ -66,12 +66,17 @@
       gap: 10px;
     }
 
-    .draggable {
+    .choice {
       padding: 8px 12px;
       background: #ce93d8;
       border-radius: 8px;
       color: #4a148c;
-      cursor: grab;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .choice.selected {
+      outline: 3px solid #8e24aa;
     }
 
     .dropzone {
@@ -80,6 +85,7 @@
       border-radius: 8px;
       margin-top: 5px;
       padding: 5px;
+      cursor: pointer;
     }
 
     img { width: 90px; border-radius: 10px; }
@@ -106,7 +112,7 @@
     <div class="error">❌</div>
   </div>
 
-  <!-- PAGE 3 DRAG MATCH -->
+  <!-- PAGE 3 -->
   <div class="page" id="page3">
     <h1>Match the flowers</h1>
     <div class="drag-container">
@@ -125,28 +131,27 @@
     </div>
 
     <div class="drag-container">
-      <div class="draggable" draggable="true">Semper Augustus</div>
-      <div class="draggable" draggable="true">Admiral van der Eijck</div>
-      <div class="draggable" draggable="true">Viseroij</div>
+      <div class="choice">Semper Augustus</div>
+      <div class="choice">Admiral van der Eijck</div>
+      <div class="choice">Viseroij</div>
     </div>
 
-    <button onclick="checkDragPage()">Submit</button>
+    <button onclick="checkTapMatch()">Submit</button>
     <div class="error">❌</div>
   </div>
 
   <!-- PAGE 4 -->
   <div class="page">
     <h1>Choose one 🎀</h1>
-    <img src="bow.png" />
+    <img src="Crazy_Hannah.jpg" />
     <div class="drag-container">
-      <div class="draggable" draggable="true">Choice 1</div>
-      <div class="draggable" draggable="true">Choice 2</div>
-      <div class="draggable" draggable="true">Choice 3</div>
+      <div class="choice" onclick="nextPage()">Hello</div>
+      <div class="choice" onclick="nextPage()">Choice 2</div>
+      <div class="choice" onclick="nextPage()">Choice 3</div>
     </div>
-    <div class="dropzone" ondrop="nextPage()" ondragover="allowDrop(event)"></div>
   </div>
 
-  <!-- PAGE 5 MAGIC TEXT -->
+  <!-- PAGE 5 -->
   <div class="page">
     <h1>Write something</h1>
     <input type="text" id="magicInput" />
@@ -189,21 +194,24 @@ function checkAnswer(btn) {
   }
 }
 
-// DRAG & DROP
-let dragged;
-document.addEventListener('dragstart', e => dragged = e.target);
+// TAP TO SELECT LOGIC
+let selected = null;
 
-function allowDrop(e) { e.preventDefault(); }
-
-document.querySelectorAll('.dropzone').forEach(zone => {
-  zone.addEventListener('dragover', e => e.preventDefault());
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.textContent = dragged.textContent;
+document.querySelectorAll('.choice').forEach(choice => {
+  choice.addEventListener('click', () => {
+    document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+    selected = choice.textContent;
+    choice.classList.add('selected');
   });
 });
 
-function checkDragPage() {
+document.querySelectorAll('#page3 .dropzone').forEach(zone => {
+  zone.addEventListener('click', () => {
+    if (selected) zone.textContent = selected;
+  });
+});
+
+function checkTapMatch() {
   const page = document.getElementById('page3');
   const zones = page.querySelectorAll('.dropzone');
   const error = page.querySelector('.error');
