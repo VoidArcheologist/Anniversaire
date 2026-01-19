@@ -6,9 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
+/* ================= BASE ================= */
+
 body {
   font-family: 'Georgia', serif;
-  background: linear-gradient(135deg, #f8e8ff, #e0f7fa);
+  background: linear-gradient(135deg, #eef7f0, #e6f3ff);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,101 +19,124 @@ body {
 }
 
 .card {
-  background: white;
-  padding: 30px;
+  background: #fff;
+  padding: 28px;
   width: 95%;
   max-width: 420px;
-  border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.18);
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-.page { display: none; }
+/* ================= PAGES ================= */
+
+.page { display: none; position: relative; }
 .page.active { display: block; }
 
 h1 { margin-bottom: 15px; }
-p { margin-bottom: 20px; }
+p { margin-bottom: 18px; }
 
 input {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   margin-bottom: 15px;
 }
 
 button {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
-  background: #8e24aa;
+  background: #6a1b9a;
   color: white;
   font-size: 1rem;
   cursor: pointer;
 }
+
+/* ================= ERRORS ================= */
 
 .error {
   font-size: 2.5rem;
   color: red;
   opacity: 0;
   transition: opacity 0.3s;
-  margin-top: 10px;
 }
 .error.show { opacity: 1; }
 
-.drag-container {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 10px;
+/* ================= WILD VINES SYSTEM ================= */
+
+.vine {
+  position: absolute;
+  width: 6px;
+  background: linear-gradient(to top, #1b5e20, #66bb6a);
+  border-radius: 6px;
+  bottom: -20%;
+  animation: vineGrow 10s linear infinite;
+  transform-origin: bottom;
+  opacity: 0.9;
 }
 
-.choice {
-  padding: 8px 12px;
-  background: #ce93d8;
-  border-radius: 8px;
-  color: #4a148c;
-  cursor: pointer;
+.vine::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 30% 30%, #a5d6a7, #4caf50);
+  border-radius: 50% 0 50% 0;
+  left: -6px;
+  top: 25%;
+  transform: rotate(45deg);
 }
 
-.choice.selected { outline: 3px solid #8e24aa; }
-
-.dropzone {
-  min-height: 40px;
-  border: 2px dashed #aaa;
-  border-radius: 8px;
-  margin-top: 5px;
-  padding: 5px;
+/* curl & sway */
+@keyframes vineGrow {
+  0%   { height: 0; transform: rotate(0deg); opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { height: 130%; transform: rotate(6deg); }
+  75%  { transform: rotate(-4deg); }
+  100% { height: 130%; transform: rotate(10deg); opacity: 0; }
 }
 
-img { width: 90px; border-radius: 10px; }
+/* ================= TENDRILS ================= */
 
-/* ================= PAGE 5 LEAVES ================= */
+.tendril {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 3px solid #81c784;
+  border-color: transparent transparent #81c784 #81c784;
+  border-radius: 50%;
+  animation: curl 6s ease-in-out infinite;
+  opacity: 0.4;
+}
 
-#page5 { position: relative; overflow: hidden; }
+@keyframes curl {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(40deg); }
+}
+
+/* ================= LEAF CLOUDS ================= */
 
 .leaf {
   position: absolute;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle at 30% 30%, #c8e6c9, #81c784);
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at 30% 30%, #c8e6c9, #66bb6a);
   border-radius: 60% 40% 60% 40%;
-  opacity: 0.3;
-  animation: sway 6s ease-in-out infinite;
+  opacity: 0.25;
+  animation: leafFloat 12s ease-in-out infinite;
 }
 
-.leaf1 { top: -40px; left: -50px; }
-.leaf2 { bottom: -50px; right: -40px; animation-delay: 2s; }
-
-@keyframes sway {
-  0%,100% { transform: rotate(0deg) translateY(0); }
-  50% { transform: rotate(5deg) translateY(5px); }
+@keyframes leafFloat {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(10px) rotate(6deg); }
 }
 
-/* CONFIRM BOX */
+/* ================= CONFIRM BOX ================= */
 
 .confirm {
   margin-top: 20px;
@@ -135,30 +160,6 @@ img { width: 90px; border-radius: 10px; }
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-/* ================= FINAL PAGE GROWTH ================= */
-
-#finalPage { position: relative; overflow: hidden; }
-
-.vine {
-  position: absolute;
-  width: 6px;
-  background: linear-gradient(to top, #2e7d32, #81c784);
-  bottom: 0;
-  animation: grow 6s linear infinite;
-  transform-origin: bottom;
-}
-
-.v1 { left: 10%; animation-delay: 0s; }
-.v2 { left: 30%; animation-delay: 2s; }
-.v3 { left: 60%; animation-delay: 1s; }
-.v4 { left: 80%; animation-delay: 3s; }
-
-@keyframes grow {
-  0% { height: 0; opacity: 0; }
-  20% { opacity: 1; }
-  100% { height: 120%; opacity: 0; }
-}
 </style>
 </head>
 
@@ -170,6 +171,11 @@ img { width: 90px; border-radius: 10px; }
   <h1>Hello</h1>
   <p>This is a very special day ! Here is a little quizz for you :)</p>
   <button onclick="nextPage()">Begin</button>
+
+  <div class="vine" style="left:5%;animation-delay:0s"></div>
+  <div class="vine" style="right:8%;animation-delay:3s"></div>
+  <div class="leaf" style="top:-50px;left:-40px"></div>
+  <div class="tendril" style="bottom:-20px;right:-30px"></div>
 </div>
 
 <!-- PAGE 2 -->
@@ -179,34 +185,30 @@ img { width: 90px; border-radius: 10px; }
   <input type="text" />
   <button onclick="checkAnswer(this)">Submit</button>
   <div class="error">❌</div>
+
+  <div class="vine" style="left:15%;animation-delay:1s"></div>
+  <div class="vine" style="right:2%;animation-delay:4s"></div>
+  <div class="leaf" style="bottom:-60px;right:-40px"></div>
 </div>
 
 <!-- PAGE 3 -->
 <div class="page" id="page3">
   <h1>As a true dutch person you should get this on your first try !</h1>
-  <div class="drag-container">
-    <div><img src="Semper_Augustus.jpg"><div class="dropzone" data-answer="Semper Augustus"></div></div>
-    <div><img src="Admiral_van_der_Eijck.jpg"><div class="dropzone" data-answer="Admiral van der Eijck"></div></div>
-    <div><img src="Viseroij.png"><div class="dropzone" data-answer="Viseroij"></div></div>
-  </div>
-  <div class="drag-container">
-    <div class="choice">Semper Augustus</div>
-    <div class="choice">Admiral van der Eijck</div>
-    <div class="choice">Viseroij</div>
-  </div>
-  <button onclick="checkTapMatch()">Submit</button>
-  <div class="error">❌</div>
+  <button onclick="nextPage()">Submit</button>
+
+  <div class="vine" style="left:0%;animation-delay:0s"></div>
+  <div class="vine" style="left:25%;animation-delay:2s"></div>
+  <div class="vine" style="right:10%;animation-delay:5s"></div>
 </div>
 
 <!-- PAGE 4 -->
 <div class="page">
   <h1>Who is this ?</h1>
-  <img src="Crazy_Hannah.jpg" />
-  <div class="drag-container">
-    <div class="choice" onclick="nextPage()">A spawn from Hell</div>
-    <div class="choice" onclick="nextPage()">The bearer of half of my genes</div>
-    <div class="choice" onclick="nextPage()">The cat's pet</div>
-  </div>
+  <button onclick="nextPage()">Continue</button>
+
+  <div class="leaf" style="top:-60px;right:-60px"></div>
+  <div class="leaf" style="bottom:-40px;left:-40px"></div>
+  <div class="tendril" style="top:-20px;left:30px"></div>
 </div>
 
 <!-- PAGE 5 -->
@@ -224,20 +226,28 @@ img { width: 90px; border-radius: 10px; }
   </div>
 
   <div class="error">❌</div>
-  <div class="leaf leaf1"></div>
-  <div class="leaf leaf2"></div>
+
+  <div class="vine" style="left:5%;animation-delay:1s"></div>
+  <div class="vine" style="right:5%;animation-delay:3s"></div>
+  <div class="leaf" style="top:-50px;left:-40px"></div>
+  <div class="leaf" style="bottom:-50px;right:-40px"></div>
 </div>
 
-<!-- PAGE 6 FINAL -->
-<div class="page" id="finalPage">
+<!-- FINAL PAGE -->
+<div class="page">
   <h1>Fijne Verjaardag</h1>
   <p>I hope you feel younger than ever,</p>
   <p>because you sure look like it !</p>
 
-  <div class="vine v1"></div>
-  <div class="vine v2"></div>
-  <div class="vine v3"></div>
-  <div class="vine v4"></div>
+  <div class="vine" style="left:0%;animation-delay:0s"></div>
+  <div class="vine" style="left:20%;animation-delay:2s"></div>
+  <div class="vine" style="right:20%;animation-delay:4s"></div>
+  <div class="vine" style="right:0%;animation-delay:6s"></div>
+
+  <div class="leaf" style="top:-60px;left:40px"></div>
+  <div class="leaf" style="bottom:-60px;right:40px"></div>
+  <div class="tendril" style="top:-30px;right:20px"></div>
+  <div class="tendril" style="bottom:-30px;left:20px"></div>
 </div>
 
 </div>
@@ -252,64 +262,28 @@ function nextPage() {
   pages[current].classList.add('active');
 }
 
-function normalize(str) {
-  return str.toLowerCase().replace(/[_\s]+/g, ' ').trim();
-}
-
 function checkAnswer(btn) {
-  const page = btn.parentElement;
-  const input = normalize(page.querySelector('input').value);
-  const correct = normalize(page.dataset.answer);
-  const error = page.querySelector('.error');
-  if (input === correct) nextPage();
-  else { error.classList.add('show'); setTimeout(()=>error.classList.remove('show'),800); }
-}
-
-let selected=null;
-document.querySelectorAll('.choice').forEach(c=>{
-  c.addEventListener('click',()=>{
-    document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));
-    selected=c.textContent; c.classList.add('selected');
-  });
-});
-
-document.querySelectorAll('#page3 .dropzone').forEach(z=>{
-  z.addEventListener('click',()=>{ if(selected) z.textContent=selected; });
-});
-
-function checkTapMatch() {
-  const page=document.getElementById('page3');
-  const zones=page.querySelectorAll('.dropzone');
-  const error=page.querySelector('.error');
-  for(let z of zones){
-    if(normalize(z.textContent)!==normalize(z.dataset.answer)){
-      error.classList.add('show');
-      zones.forEach(d=>d.textContent='');
-      setTimeout(()=>error.classList.remove('show'),800);
-      return;
-    }
-  }
   nextPage();
 }
 
-const fixed="He's perfect";
-const magic=document.getElementById('magicInput');
-let index=0;
+const fixed = "He's perfect";
+const magic = document.getElementById('magicInput');
+let index = 0;
 
-magic.addEventListener('input',()=>{
-  index=Math.min(index+1,fixed.length);
-  magic.value=fixed.slice(0,index);
+magic.addEventListener('input', () => {
+  index = Math.min(index + 1, fixed.length);
+  magic.value = fixed.slice(0, index);
 });
 
-function checkMagic(){
-  if(magic.value===fixed)
-    document.getElementById('confirmBox').style.display='block';
+function checkMagic() {
+  if (magic.value === fixed)
+    document.getElementById('confirmBox').style.display = 'block';
 }
 
-function rejectConfirm(){
-  const e=document.querySelector('#page5 .error');
+function rejectConfirm() {
+  const e = document.querySelector('#page5 .error');
   e.classList.add('show');
-  setTimeout(()=>e.classList.remove('show'),800);
+  setTimeout(() => e.classList.remove('show'), 800);
 }
 </script>
 </body>
