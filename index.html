@@ -1,254 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Special Quiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>Special Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-/* ================= BASE ================= */
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #f8e8ff, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-body {
-  font-family: 'Georgia', serif;
-  background: linear-gradient(135deg, #eef7f0, #e6f3ff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+    .card {
+      background: linear-gradient(180deg, #ffffff, #faf7ff);
+      padding: 30px;
+      width: 95%;
+      max-width: 420px;
+      border-radius: 20px;
+      box-shadow:
+        0 15px 40px rgba(0,0,0,0.15),
+        inset 0 0 0 1px rgba(255,255,255,0.6);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-.card {
-  background: #fff;
-  padding: 28px;
-  width: 95%;
-  max-width: 420px;
-  border-radius: 18px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.18);
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
+    /* Decorative background shapes */
+    .card::before,
+    .card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(142,36,170,0.12), transparent 70%);
+      z-index: 0;
+    }
 
-/* ================= PAGES ================= */
+    .card::before {
+      top: -100px;
+      left: -100px;
+    }
 
-.page { display: none; position: relative; }
-.page.active { display: block; }
+    .card::after {
+      bottom: -120px;
+      right: -120px;
+    }
 
-h1 { margin-bottom: 15px; }
-p { margin-bottom: 18px; }
+    .page {
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+    .page.active { display: block; }
 
-input {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 15px;
-}
+    h1 { margin-bottom: 15px; }
+    p { margin-bottom: 20px; }
 
-button {
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  background: #6a1b9a;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-}
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      background: #ffffffcc;
+    }
 
-/* ================= ERRORS ================= */
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #8e24aa, #ab47bc);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
 
-.error {
-  font-size: 2.5rem;
-  color: red;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.error.show { opacity: 1; }
+    .decor {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
 
-/* ================= WILD VINES SYSTEM ================= */
+    .error {
+      font-size: 2.5rem;
+      color: red;
+      opacity: 0;
+      transition: opacity 0.3s;
+      margin-top: 10px;
+    }
+    .error.show { opacity: 1; }
 
-.vine {
-  position: absolute;
-  width: 6px;
-  background: linear-gradient(to top, #1b5e20, #66bb6a);
-  border-radius: 6px;
-  bottom: -20%;
-  animation: vineGrow 10s linear infinite;
-  transform-origin: bottom;
-  opacity: 0.9;
-}
+    .drag-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-.vine::before {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background: radial-gradient(circle at 30% 30%, #a5d6a7, #4caf50);
-  border-radius: 50% 0 50% 0;
-  left: -6px;
-  top: 25%;
-  transform: rotate(45deg);
-}
+    .choice {
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #e1bee7, #ce93d8);
+      border-radius: 10px;
+      color: #4a148c;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
 
-/* curl & sway */
-@keyframes vineGrow {
-  0%   { height: 0; transform: rotate(0deg); opacity: 0; }
-  15%  { opacity: 1; }
-  50%  { height: 130%; transform: rotate(6deg); }
-  75%  { transform: rotate(-4deg); }
-  100% { height: 130%; transform: rotate(10deg); opacity: 0; }
-}
+    .choice.selected {
+      outline: 3px solid #8e24aa;
+    }
 
-/* ================= TENDRILS ================= */
+    .dropzone {
+      min-height: 40px;
+      border: 2px dashed #aaa;
+      border-radius: 10px;
+      margin-top: 5px;
+      padding: 5px;
+      cursor: pointer;
+      background: #ffffffcc;
+    }
 
-.tendril {
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border: 3px solid #81c784;
-  border-color: transparent transparent #81c784 #81c784;
-  border-radius: 50%;
-  animation: curl 6s ease-in-out infinite;
-  opacity: 0.4;
-}
+    img { width: 90px; border-radius: 12px; }
 
-@keyframes curl {
-  0%,100% { transform: rotate(0deg); }
-  50% { transform: rotate(40deg); }
-}
+    /* ===== PAGE 5 CONFIRMATION ===== */
 
-/* ================= LEAF CLOUDS ================= */
+    .confirm {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #f3e5f5, #ede7f6);
+      display: none;
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.15),
+        inset 0 0 0 1px rgba(255,255,255,0.6);
+    }
 
-.leaf {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle at 30% 30%, #c8e6c9, #66bb6a);
-  border-radius: 60% 40% 60% 40%;
-  opacity: 0.25;
-  animation: leafFloat 12s ease-in-out infinite;
-}
+    .confirm-text {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: #4a148c;
+    }
 
-@keyframes leafFloat {
-  0%,100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(10px) rotate(6deg); }
-}
+    .confirm-buttons {
+      display: flex;
+      gap: 15px;
+    }
 
-/* ================= CONFIRM BOX ================= */
+    .confirm-buttons button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
 
-.confirm {
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #f1f8e9, #e8f5e9);
-  display: none;
-  animation: fadeUp 0.4s ease;
-}
+    .confirm-buttons .yes {
+      background: linear-gradient(135deg, #7cb342, #9ccc65);
+    }
 
-.confirm-buttons {
-  display: flex;
-  gap: 15px;
-}
-
-.confirm-buttons button { flex: 1; }
-.confirm-buttons .yes { background: #66bb6a; }
-.confirm-buttons .no { background: #ef9a9a; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
+    .confirm-buttons .no {
+      background: linear-gradient(135deg, #ef5350, #e57373);
+    }
+  </style>
 </head>
 
 <body>
 <div class="card">
 
-<!-- PAGE 1 -->
-<div class="page active">
-  <h1>Hello</h1>
-  <p>This is a very special day ! Here is a little quizz for you :)</p>
-  <button onclick="nextPage()">Begin</button>
+  <!-- PAGE 1 -->
+  <div class="page active">
+    <div class="decor">✨🌸✨</div>
+    <h1>Hello</h1>
+    <p>This is a very special day ! Here is a little quizz for you :)</p>
+    <button onclick="nextPage()">Begin</button>
+  </div>
 
-  <div class="vine" style="left:5%;animation-delay:0s"></div>
-  <div class="vine" style="right:8%;animation-delay:3s"></div>
-  <div class="leaf" style="top:-50px;left:-40px"></div>
-  <div class="tendril" style="bottom:-20px;right:-30px"></div>
-</div>
+  <!-- PAGE 2 -->
+  <div class="page" data-answer="oliebollen">
+    <h1>Question</h1>
+    <p>What makes everything better?</p>
+    <input type="text" />
+    <button onclick="checkAnswer(this)">Submit</button>
+    <div class="error">❌</div>
+  </div>
 
-<!-- PAGE 2 -->
-<div class="page" data-answer="oliebollen">
-  <h1>Question</h1>
-  <p>What makes everything better?</p>
-  <input type="text" />
-  <button onclick="checkAnswer(this)">Submit</button>
-  <div class="error">❌</div>
+  <!-- PAGE 3 -->
+  <div class="page" id="page3">
+    <h1>As a true dutch person you should get this on your first try !</h1>
 
-  <div class="vine" style="left:15%;animation-delay:1s"></div>
-  <div class="vine" style="right:2%;animation-delay:4s"></div>
-  <div class="leaf" style="bottom:-60px;right:-40px"></div>
-</div>
+    <div class="drag-container">
+      <div>
+        <img src="Semper_Augustus.jpg" />
+        <div class="dropzone" data-answer="Semper Augustus"></div>
+      </div>
+      <div>
+        <img src="Admiral_van_der_Eijck.jpg" />
+        <div class="dropzone" data-answer="Admiral van der Eijck"></div>
+      </div>
+      <div>
+        <img src="Viseroij.png" />
+        <div class="dropzone" data-answer="Viseroij"></div>
+      </div>
+    </div>
 
-<!-- PAGE 3 -->
-<div class="page" id="page3">
-  <h1>As a true dutch person you should get this on your first try !</h1>
-  <button onclick="nextPage()">Submit</button>
+    <div class="drag-container">
+      <div class="choice">Semper Augustus</div>
+      <div class="choice">Admiral van der Eijck</div>
+      <div class="choice">Viseroij</div>
+    </div>
 
-  <div class="vine" style="left:0%;animation-delay:0s"></div>
-  <div class="vine" style="left:25%;animation-delay:2s"></div>
-  <div class="vine" style="right:10%;animation-delay:5s"></div>
-</div>
+    <button onclick="checkTapMatch()">Submit</button>
+    <div class="error">❌</div>
+  </div>
 
-<!-- PAGE 4 -->
-<div class="page">
-  <h1>Who is this ?</h1>
-  <button onclick="nextPage()">Continue</button>
-
-  <div class="leaf" style="top:-60px;right:-60px"></div>
-  <div class="leaf" style="bottom:-40px;left:-40px"></div>
-  <div class="tendril" style="top:-20px;left:30px"></div>
-</div>
-
-<!-- PAGE 5 -->
-<div class="page" id="page5">
-  <h1>What is Flo's flaw ?</h1>
-  <input type="text" id="magicInput" />
-  <button onclick="checkMagic()">Submit</button>
-
-  <div class="confirm" id="confirmBox">
-    <p>You really mean it ?</p>
-    <div class="confirm-buttons">
-      <button class="yes" onclick="nextPage()">Yes</button>
-      <button class="no" onclick="rejectConfirm()">No</button>
+  <!-- PAGE 4 -->
+  <div class="page">
+    <h1>Who is this ?</h1>
+    <img src="Crazy_Hannah.jpg" />
+    <div class="drag-container">
+      <div class="choice" onclick="nextPage()">A spawn from Hell</div>
+      <div class="choice" onclick="nextPage()">The bearer of half of my genes</div>
+      <div class="choice" onclick="nextPage()">The cat's pet</div>
     </div>
   </div>
 
-  <div class="error">❌</div>
+  <!-- PAGE 5 -->
+  <div class="page" id="page5">
+    <h1>What is Flo's flaw ?</h1>
 
-  <div class="vine" style="left:5%;animation-delay:1s"></div>
-  <div class="vine" style="right:5%;animation-delay:3s"></div>
-  <div class="leaf" style="top:-50px;left:-40px"></div>
-  <div class="leaf" style="bottom:-50px;right:-40px"></div>
-</div>
+    <input type="text" id="magicInput" />
+    <button onclick="checkMagic()">Submit</button>
 
-<!-- FINAL PAGE -->
-<div class="page">
-  <h1>Fijne Verjaardag</h1>
-  <p>I hope you feel younger than ever,</p>
-  <p>because you sure look like it !</p>
+    <div class="confirm" id="confirmBox">
+      <p class="confirm-text">You really mean it ?</p>
+      <div class="confirm-buttons">
+        <button class="yes" onclick="nextPage()">Yes</button>
+        <button class="no" onclick="rejectConfirm()">No</button>
+      </div>
+    </div>
 
-  <div class="vine" style="left:0%;animation-delay:0s"></div>
-  <div class="vine" style="left:20%;animation-delay:2s"></div>
-  <div class="vine" style="right:20%;animation-delay:4s"></div>
-  <div class="vine" style="right:0%;animation-delay:6s"></div>
+    <div class="error">❌</div>
+  </div>
 
-  <div class="leaf" style="top:-60px;left:40px"></div>
-  <div class="leaf" style="bottom:-60px;right:40px"></div>
-  <div class="tendril" style="top:-30px;right:20px"></div>
-  <div class="tendril" style="bottom:-30px;left:20px"></div>
-</div>
+  <!-- PAGE 6 -->
+  <div class="page">
+    <h1>💖 Fijne Verjaardag 💖</h1>
+    <p>I hope you feel younger than ever,</p>
+    <p>because you sure look like it !</p>
+  </div>
 
 </div>
 
@@ -262,7 +268,52 @@ function nextPage() {
   pages[current].classList.add('active');
 }
 
+function normalize(str) {
+  return str.toLowerCase().replace(/[_\s]+/g, ' ').trim();
+}
+
 function checkAnswer(btn) {
+  const page = btn.parentElement;
+  const input = normalize(page.querySelector('input').value);
+  const correct = normalize(page.dataset.answer);
+  const error = page.querySelector('.error');
+
+  if (input === correct) nextPage();
+  else {
+    error.classList.add('show');
+    setTimeout(() => error.classList.remove('show'), 800);
+  }
+}
+
+let selected = null;
+
+document.querySelectorAll('.choice').forEach(choice => {
+  choice.addEventListener('click', () => {
+    document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+    selected = choice.textContent;
+    choice.classList.add('selected');
+  });
+});
+
+document.querySelectorAll('#page3 .dropzone').forEach(zone => {
+  zone.addEventListener('click', () => {
+    if (selected) zone.textContent = selected;
+  });
+});
+
+function checkTapMatch() {
+  const page = document.getElementById('page3');
+  const zones = page.querySelectorAll('.dropzone');
+  const error = page.querySelector('.error');
+
+  for (let z of zones) {
+    if (normalize(z.textContent) !== normalize(z.dataset.answer)) {
+      error.classList.add('show');
+      zones.forEach(d => d.textContent = '');
+      setTimeout(() => error.classList.remove('show'), 800);
+      return;
+    }
+  }
   nextPage();
 }
 
@@ -276,15 +327,19 @@ magic.addEventListener('input', () => {
 });
 
 function checkMagic() {
-  if (magic.value === fixed)
+  if (magic.value === fixed) {
     document.getElementById('confirmBox').style.display = 'block';
+  }
 }
 
 function rejectConfirm() {
-  const e = document.querySelector('#page5 .error');
-  e.classList.add('show');
-  setTimeout(() => e.classList.remove('show'), 800);
+  const page = document.getElementById('page5');
+  const error = page.querySelector('.error');
+
+  error.classList.add('show');
+  setTimeout(() => error.classList.remove('show'), 800);
 }
 </script>
+
 </body>
 </html>
